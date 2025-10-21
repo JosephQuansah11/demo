@@ -1,0 +1,138 @@
+### User Management API Tests
+### Base URL: http://localhost:8080
+
+### 1. Get all users (should return empty list initially)
+GET http://localhost:8080/users
+Accept: application/json
+
+###
+
+### 2. Create a new user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "telephone": "+1-555-0123",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zip": "10001",
+    "country": "United States",
+    "countryCode": "US"
+  }
+}
+
+###
+
+### 3. Create another user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "Jane Smith",
+  "email": "jane.smith@example.com",
+  "telephone": "+1-555-0456",
+  "address": {
+    "street": "456 Oak Ave",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zip": "90210",
+    "country": "United States",
+    "countryCode": "US"
+  }
+}
+
+###
+
+### 4. Get all users (should now return the created users)
+GET http://localhost:8080/users
+Accept: application/json
+
+###
+
+### 5. Get user by ID (replace with actual UUID from previous responses)
+# Note: Replace the UUID below with an actual ID from the GET all users response
+GET http://localhost:8080/users/f80d7deb-b8b7-415c-b977-c1239641e24d
+Accept: application/json
+
+###
+
+### 5.1 Remove user by Id
+# Note: Replace the UUID below with an actual ID from the GET all users response
+DELETE http://localhost:8080/users/f80d7deb-b8b7-415c-b977-c1239641e24d
+Accept: application/json
+
+###
+
+### 6. Update user (replace with actual UUID and modify the user data)
+# Note: Replace the UUID below with an actual ID from the GET all users response
+PUT http://localhost:8080/users/3a993f72-f58d-402d-9aaa-3bac0ebe3fed
+Content-Type: application/json
+
+{
+  "id": "3a993f72-f58d-402d-9aaa-3bac0ebe3fed",
+  "name": "John Doe Updated",
+  "email": "john.doe.updated@example.com",
+  "telephone": "+1-555-9999",
+  "address": {
+    "street": "789 Updated St",
+    "city": "Updated City",
+    "state": "UC",
+    "zip": "99999",
+    "country": "United States",
+    "countryCode": "US"
+  }
+}
+
+###
+
+### 7. Delete user by ID (replace with actual UUID)
+# Note: Replace the UUID below with an actual ID from the GET all users response
+DELETE http://localhost:8080/users/4dee8edb-d401-4c08-b332-ecbecb14b214
+
+###
+
+### 8. Verify user was deleted - Get all users again
+GET http://localhost:8080/users
+Accept: application/json
+
+###
+
+### 9. Test error case - Get non-existent user
+GET http://localhost:8080/users/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+###
+
+### 10. Test error case - Create user with null data
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": null,
+  "email": null,
+  "telephone": null,
+  "address": null
+}
+
+###
+
+### 11. Test minimal user creation (only required fields)
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "Minimal User",
+  "email": "minimal@example.com"
+}
+
+###
+
+### Instructions:
+### 1. Start your Spring Boot application first: ./gradlew bootRun
+### 2. Execute these requests in order
+### 3. Copy actual UUIDs from responses to replace the placeholder UUIDs in requests 5, 6, and 7
+### 4. The application uses an in-memory database, so data will be lost when you restart the app

@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: sda_acm
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: mypassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: never  # Disable data.sql since we're using threaded initialization
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    home.exercise.java_programming_demo: INFO
+
+# Frontend Application Configuration
+app:
+  frontend:
+    path: "E:/2025/storyLine/react_demo/sda_acm_2025/sda_acm_webapp"
+    auto-launch: true
+    port: 3000
+    open-browser: true
