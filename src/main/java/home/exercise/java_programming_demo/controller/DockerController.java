@@ -58,7 +58,7 @@ public class DockerController {
     public ResponseEntity<Map<String, Boolean>> checkDockerServices() {
         return ResponseEntity.ok(Map.of(
             "docker", dockerService.isDockerRunning(),
-            "postgres", dockerService.isPostgreSQLContainerRunning()
+            "my_postgres_db", dockerService.isPostgreSQLContainerRunning()
         ));
     }
 }

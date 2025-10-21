@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 public class UserController {
     private final UserManagementService userService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }

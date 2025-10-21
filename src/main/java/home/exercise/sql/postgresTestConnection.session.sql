@@ -50,3 +50,6 @@ INSERT INTO users (id, name, email, telephone, street, city, state, zip, country
 (gen_random_uuid(), 'User 48', 'user48@example.com', '+5554443332', '1028 Pineapple St', 'Delhi', 'DL', '110001', 'India', 'IN'),
 (gen_random_uuid(), 'User 49', 'user49@example.com', '+6665554443', '1029 Palm Ave', 'Rio de Janeiro', 'RJ', '20000-000', 'Brazil', 'BR'),
 (gen_random_uuid(), 'User 50', 'user50@example.com', '+7776665554', '1030 Redwood Ct', 'Durban', 'KZN', '4001', 'South Africa', 'ZA');
+
+
+select * from users;
