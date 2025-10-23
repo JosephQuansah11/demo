@@ -33,10 +33,17 @@ public class DataController {
     @GetMapping("/progress")
     public ResponseEntity<Map<String, Object>> getInitializationProgress(
             @RequestParam(defaultValue = "0") long clientVersion) {
-        
+
         Map<String, Object> response = new HashMap<>();
         long currentVersion = progressService.getCurrentVersion();
-        
+        System.out.println("\n\\n" + //
+                "\\n" + //
+                "\\n" + //
+                "Current version: " + currentVersion + //
+                "\\n" + //
+                "\\n" + "Client version: " + clientVersion + //
+                "\\n");
+
         // Only return data if client version is outdated or if there are active changes
         if (clientVersion < currentVersion || progressService.hasActiveChanges()) {
             response.put("progress", progressService.getAllProgress());
@@ -49,12 +56,13 @@ public class DataController {
             response.put("hasChanges", false);
             response.put("shouldPoll", progressService.shouldPoll());
         }
-        
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/progress/{entityType}")
-    public ResponseEntity<DataInitializationProgressService.ProgressInfo> getEntityProgress(@PathVariable String entityType) {
+    public ResponseEntity<DataInitializationProgressService.ProgressInfo> getEntityProgress(
+            @PathVariable String entityType) {
         DataInitializationProgressService.ProgressInfo progress = progressService.getProgress(entityType);
         if (progress != null) {
             return ResponseEntity.ok(progress);
@@ -69,13 +77,13 @@ public class DataController {
         status.put("churchCount", churchRepository.count());
         status.put("departmentCount", departmentRepository.count());
         status.put("complete", progressService.isInitializationComplete());
-        
+
         // Add frontend status
         Map<String, Object> frontendStatus = new HashMap<>();
         frontendStatus.put("running", frontendLauncherService.isFrontendRunning());
         frontendStatus.put("status", frontendLauncherService.getFrontendStatus());
         status.put("frontend", frontendStatus);
-        
+
         return ResponseEntity.ok(status);
     }
 
@@ -83,18 +91,16 @@ public class DataController {
     public ResponseEntity<Map<String, String>> launchFrontend() {
         frontendLauncherService.launchFrontendIfReady();
         return ResponseEntity.ok(Map.of(
-            "message", "Frontend launch initiated",
-            "status", frontendLauncherService.getFrontendStatus()
-        ));
+                "message", "Frontend launch initiated",
+                "status", frontendLauncherService.getFrontendStatus()));
     }
 
     @PostMapping("/stop-frontend")
     public ResponseEntity<Map<String, String>> stopFrontend() {
         frontendLauncherService.stopFrontend();
         return ResponseEntity.ok(Map.of(
-            "message", "Frontend stop initiated",
-            "status", frontendLauncherService.getFrontendStatus()
-        ));
+                "message", "Frontend stop initiated",
+                "status", frontendLauncherService.getFrontendStatus()));
     }
 
     @GetMapping("/users")
@@ -122,17 +128,17 @@ public class DataController {
     }
 
     @GetMapping("/users/count")
-    public ResponseEntity<Long> getUserCount() {
-        return ResponseEntity.ok(userRepository.count());
+    public ResponseEntity<Integer> getUserCount() {
+        return ResponseEntity.ok(userRepository.findAll().size());
     }
 
     @GetMapping("/churches/count")
-    public ResponseEntity<Long> getChurchCount() {
-        return ResponseEntity.ok(churchRepository.count());
+    public ResponseEntity<Integer> getChurchCount() {
+        return ResponseEntity.ok(churchRepository.findAll().size());
     }
 
     @GetMapping("/departments/count")
-    public ResponseEntity<Long> getDepartmentCount() {
-        return ResponseEntity.ok(departmentRepository.count());
+    public ResponseEntity<Integer> getDepartmentCount() {
+        return ResponseEntity.ok(departmentRepository.findAll().size());
     }
 }

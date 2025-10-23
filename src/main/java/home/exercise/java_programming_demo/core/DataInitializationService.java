@@ -21,7 +21,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -161,9 +160,9 @@ public class DataInitializationService implements CommandLineRunner {
             String language = "English";
             String theme = "default";
             boolean notifications = faker.bool().bool();
-            UUID id = UUID.randomUUID();
             UserRole role = faker.options().option(UserRole.class);
             String password = "password123";
+            String avatar = "https://api.dicebear.com/9.x/adventurer/svg?seed=" + firstName;
 
             UserPreferences preferences = new UserPreferences(
                     language, theme, notifications);
@@ -171,10 +170,12 @@ public class DataInitializationService implements CommandLineRunner {
             UserProfile profile = new UserProfile(
                     firstName,
                     lastName,
-                    preferences);
+                    avatar,
+                    preferences
+                    );
 
             User user = new User(
-                    id,
+                    null,
                     userName,
                     address,
                     email,
@@ -212,7 +213,7 @@ public class DataInitializationService implements CommandLineRunner {
             Integer capacity = faker.number().numberBetween(50, 500);
 
             Church church = new Church(
-                    UUID.randomUUID(),
+                    null,
                     churchName,
                     denomination,
                     address,
@@ -246,7 +247,7 @@ public class DataInitializationService implements CommandLineRunner {
             String budget = currencyFormat.format(budgetAmount);
 
             Department department = new Department(
-                    UUID.randomUUID(),
+                    null,
                     deptName,
                     description,
                     headName,

@@ -25,30 +25,44 @@ Content-Type: application/json
   }
 }
 
-###
+###get user by email and password
+GET http://localhost:8080/users/loginPasswordEncoded/penni.welch@hotmail.com/password123
+Accept: application/json
 
 ### 3. Create another user
 POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-  "name": "Jane Smith",
-  "email": "jane.smith@example.com",
-  "telephone": "+1-555-0456",
+  "userName": "JosephQuan ",
+  "email": "josepheducationplatform@gmail.com",
+  "telephone": "+32496784139",
+  "password": "password123",
   "address": {
-    "street": "456 Oak Ave",
-    "city": "Los Angeles",
-    "state": "CA",
-    "zip": "90210",
-    "country": "United States",
-    "countryCode": "US"
-  }
+    "street": "Minister Delbekelaan 33",  
+    "city": "Antwerp",
+    "state": "Antwerp",
+    "zip": "2170",
+    "country": "Belgium",
+    "countryCode": "BE"
+  },
+  "profile": {
+    "firstName": "Joseph",
+    "lastName": "Quansah Kotei",
+    "avatar": "https://media.tenor.com/hD5dujWbbq0AAAAm/really-zhao.webp",
+    "preferences": {
+      "language": "English",
+      "theme": "dark",
+      "notifications": true
+    }
+},
+    "role": "USER"
 }
 
 ###
 
 ### 4. Get all users (should now return the created users)
-GET http://localhost:8080/users
+GET http://localhost:8080/users/all
 Accept: application/json
 
 ###

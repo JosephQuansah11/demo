@@ -138,7 +138,7 @@ public class FrontendLauncherService {
                         log.info("🎉 Frontend application is ready and compiled successfully!");
                         
                         // Optional: Open browser automatically
-                        openBrowserIfConfigured();
+                        // openBrowserIfConfigured();
                     }
                     
                     // Log errors
@@ -152,19 +152,19 @@ public class FrontendLauncherService {
         });
     }
 
-    private void openBrowserIfConfigured() {
-        // Optional: Auto-open browser (can be configured)
-        try {
-            String url = "http://localhost:" + frontendPort;
-            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                ProcessBuilder pb = new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url);
-                pb.start();
-                log.info("🌐 Opened browser to: {}", url);
-            }
-        } catch (Exception e) {
-            log.debug("Could not auto-open browser: {}", e.getMessage());
-        }
-    }
+    // private void openBrowserIfConfigured() {
+    //     // Optional: Auto-open browser (can be configured)
+    //     try {
+    //         String url = "http://localhost:" + frontendPort;
+    //         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+    //             ProcessBuilder pb = new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", url);
+    //             pb.start();
+    //             log.info("🌐 Opened browser to: {}", url);
+    //         }
+    //     } catch (Exception e) {
+    //         log.debug("Could not auto-open browser: {}", e.getMessage());
+    //     }
+    // }
 
     public boolean isFrontendRunning() {
         return frontendLaunched.get() && (frontendProcess != null && frontendProcess.isAlive());
