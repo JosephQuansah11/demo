@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import akka.actor.typed.ActorSystem;
+import home.exercise.java_programming_demo.akka.UserActorProtocol;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class DataInitializationService implements CommandLineRunner {
     private final DepartmentRepository departmentRepository;
     private final DataInitializationProgressService progressService;
     private final FrontendLauncherService frontendLauncherService;
+    private final ActorSystem<UserActorProtocol> actorSystem;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(3);
     private final Faker faker = new Faker();
@@ -76,13 +79,16 @@ public class DataInitializationService implements CommandLineRunner {
             progressService.updateProgress("User", "Starting user data population...");
             log.info("Populating User data...");
 
-            userRepository.saveAllAndFlush(createMockUsers());
+            List<User> users = createMockUsers();
+            for (User user : users) {
+                actorSystem.tell(new UserActorProtocol.ProcessUser(user, null));
+            }
 
             progressService.updateProgress("User",
-                    String.format("Populated %d users", createMockUsers().size()));
+                    String.format("Populated %d users", users.size()));
 
             progressService.updateProgress("User", "User data population completed!");
-            log.info("User data population completed - {} users created", createMockUsers().size());
+            log.info("User data population completed - {} users created", users.size());
 
         } catch (Exception e) {
             log.error("Error initializing users", e);

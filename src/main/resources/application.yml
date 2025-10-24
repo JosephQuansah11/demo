@@ -1,4 +1,20 @@
 server:
+
+akka:
+  actor:
+    # This is the default dispatcher. For non-blocking operations.
+    default-dispatcher:
+      type: "Dispatcher"
+      executor: "fork-join-executor"
+
+# Custom dispatcher for blocking I/O calls (like database access)
+blocking-io-dispatcher:
+  type: Dispatcher
+  executor: "thread-pool-executor"
+  thread-pool-executor:
+    fixed-pool-size: 32 # Adjust based on your DB connection pool and expected load
+  throughput: 1
+  
   port: 8080
 
 spring:
@@ -9,6 +25,7 @@ spring:
     username: myuser
     password: mypassword
     driver-class-name: org.postgresql.Driver
+  
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -31,3 +48,4 @@ app:
     auto-launch: true
     port: 3000
     open-browser: true
+
