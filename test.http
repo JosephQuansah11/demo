@@ -150,3 +150,24 @@ Content-Type: application/json
 ### 2. Execute these requests in order
 ### 3. Copy actual UUIDs from responses to replace the placeholder UUIDs in requests 5, 6, and 7
 ### 4. The application uses an in-memory database, so data will be lost when you restart the app
+
+### security check
+checking security
+GET http://localhost:8080/users/loginPasswordEncoded/penni.welch@hotmail.com/password123
+
+### keycloak security check
+### security check
+POST http://localhost:8081/realms/sda_acm/protocol/openid-connect/token HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+  client_id = sda_acm_client &
+  username = josephQuan &
+  password = user &
+  grant_type = password &
+  scope = basic
+//saving the access token
+@access_token = %{client.global.set("accessToken", response.body.access_token)}%
+
+### adding player
+GET http://localhost:8090/api/players/addPlayer
+Authorization: Bearer {{access_token}}

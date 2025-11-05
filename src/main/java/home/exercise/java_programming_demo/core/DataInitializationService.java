@@ -21,10 +21,17 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.ActorSystem;
+import akka.actor.typed.Behavior;
+import akka.actor.typed.Props;
+import akka.actor.typed.javadsl.Behaviors;
 import home.exercise.java_programming_demo.akka.UserActorProtocol;
 
 @Service
@@ -80,15 +87,32 @@ public class DataInitializationService implements CommandLineRunner {
             log.info("Populating User data...");
 
             List<User> users = createMockUsers();
+            // Create a temporary actor to collect responses
+            Behavior<UserActorProtocol> responseCollector = Behaviors.receive(UserActorProtocol.class)
+                .onMessage(UserActorProtocol.UserProcessed.class, response -> {
+                    log.info("User processed: {}", response.user().getEmail());
+                    return Behaviors.same();
+                })
+                .onMessage(UserActorProtocol.UserProcessingFailed.class, failure -> {
+                    log.error("Failed to process user: {}", failure.exception().getMessage());
+                    return Behaviors.same();
+                })
+                .build();
+
+            ActorRef<UserActorProtocol> responseActor = actorSystem.systemActorOf(responseCollector, "responseCollector", Props.empty());
+
+
+           // Send ProcessUser messages with the responseActor as replyTo
+            AtomicInteger processedCount = new AtomicInteger(0);
             for (User user : users) {
-                actorSystem.tell(new UserActorProtocol.ProcessUser(user, null));
+                var processor = new UserActorProtocol.ProcessUser(user, responseActor);
+                actorSystem.tell(processor);
+                processedCount.incrementAndGet();
             }
 
-            progressService.updateProgress("User",
-                    String.format("Populated %d users", users.size()));
-
+            progressService.updateProgress("User", String.format("Populated %d users", processedCount.get()));
             progressService.updateProgress("User", "User data population completed!");
-            log.info("User data population completed - {} users created", users.size());
+            log.info("User data population completed - {} users created", processedCount.get());
 
         } catch (Exception e) {
             log.error("Error initializing users", e);
@@ -182,6 +206,7 @@ public class DataInitializationService implements CommandLineRunner {
 
             User user = new User(
                     null,
+                    UUID.randomUUID().toString(),
                     userName,
                     address,
                     email,

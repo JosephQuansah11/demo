@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import java.util.UUID;
+
+import org.hibernate.annotations.RowId;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +27,8 @@ public class User {
     @GeneratedValue(strategy=GenerationType.UUID)
     @Exclude
     private UUID id;
+    @Column(unique = true)
+    private String keycloakId;
     private String userName;
     @Embedded
     private Address address;

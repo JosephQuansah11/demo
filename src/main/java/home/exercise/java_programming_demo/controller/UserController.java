@@ -25,7 +25,7 @@ import lombok.extern.log4j.Log4j2;
 @RestControllerAdvice
 @AllArgsConstructor
 @Log4j2
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 
 public class UserController {
     private final UserManagementService userService;
@@ -46,6 +46,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user) {
+        // user.setKeycloakId(user.getId().toString());
+        user.setId(null);
         log.info("Adding user: {}", user);
         userService.addUser(user);
         return ResponseEntity.ok(user);

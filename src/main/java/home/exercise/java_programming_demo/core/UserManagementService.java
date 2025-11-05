@@ -23,6 +23,8 @@ import java.util.concurrent.CompletionStage;
 import home.exercise.java_programming_demo.akka.UserActorProtocol;
 import home.exercise.java_programming_demo.db.User;
 import home.exercise.java_programming_demo.db.service.UserServiceRepository;
+import jakarta.persistence.EntityNotFoundException;
+
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -33,18 +35,31 @@ public class UserManagementService implements UserService {
     private final ActorSystem<UserActorProtocol> actorSystem;
 
     // Define the parallelism level for database writes
-    private static final int PARALLELISM = 8;
+    private static final int PARALLELISM = 3;
 
     public void addUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
-        if (userServiceRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("User already exists");
-        }
         // encrypt my password with bcrypt
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        if (userServiceRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("User already exists");
+        }
+
+        // If id is null, persist as a new entity (UUID will be generated)
+        if (user.getId() == null) {
+            userServiceRepository.save(user); // Hibernate will generate UUID
+        }
+
+        // If id is provided, check if it exists and merge
+        if (userServiceRepository.existsById(user.getId())) {
+            userServiceRepository.save(user); // Merge existing entity
+        } else {
+            throw new EntityNotFoundException("User with ID " + user.getId() + " does not exist");
+        }
 
         userServiceRepository.save(user);
     }
@@ -84,7 +99,7 @@ public class UserManagementService implements UserService {
      * DB writes.
      * For truly massive files, consider a streaming Excel parser library.
      */
-    @Transactional
+    // @Transactional
     public CompletionStage<List<User>> importMembers(InputStream fileStream) throws Exception {
         // Step 1: Parse the entire file into a List of ChurchMember objects.
         // This part is still synchronous but is usually very fast.

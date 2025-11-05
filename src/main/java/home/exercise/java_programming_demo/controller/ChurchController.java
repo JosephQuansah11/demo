@@ -21,7 +21,7 @@ import home.exercise.java_programming_demo.core.ChurchService;
 @RestController
 @RequestMapping("/churches")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 @Log4j2
 @RestControllerAdvice
 public class ChurchController {

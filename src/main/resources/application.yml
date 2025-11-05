@@ -46,6 +46,6 @@ app:
   frontend:
     path: "E:/2025/storyLine/react_demo/sda_acm_2025/sda_acm_webapp"
     auto-launch: true
-    port: 3000
+    port: 5173
     open-browser: true
 

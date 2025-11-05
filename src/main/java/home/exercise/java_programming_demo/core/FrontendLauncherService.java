@@ -21,7 +21,7 @@ public class FrontendLauncherService {
     @Value("${app.frontend.auto-launch:true}")
     private boolean autoLaunch;
 
-    @Value("${app.frontend.port:3000}")
+    @Value("${app.frontend.port:5173}")
     private int frontendPort;
 
     private final AtomicBoolean frontendLaunched = new AtomicBoolean(false);
